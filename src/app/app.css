@@ -1,5 +1,5 @@
 main {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 40px auto;
   padding: 0 16px;
   font-family: system-ui, sans-serif;
@@ -48,6 +48,20 @@ h1 { margin-bottom: 16px; }
   pointer-events: none;
 }
 
+.progress {
+  margin-top: 14px;
+  height: 8px;
+  background: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #00b020;
+  transition: width 0.3s ease;
+}
+
 .message { margin: 12px 0 0; font-weight: 500; }
 
 .count { color: #777; }
@@ -60,9 +74,35 @@ table {
 
 th, td {
   text-align: left;
-  padding: 10px 8px;
+  padding: 8px;
   border-bottom: 1px solid #eee;
+  vertical-align: middle;
 }
 
 th { background: #f6f6f6; }
 tbody tr:hover { background: #fafafa; }
+
+.poster-cell { width: 52px; }
+
+.poster-cell img,
+.no-poster {
+  width: 46px;
+  height: 69px;
+  border-radius: 4px;
+  object-fit: cover;
+  display: block;
+}
+
+.no-poster { background: #e4e4e4; }
+
+.title { font-weight: 600; }
+.director { color: #777; font-size: 13px; margin-top: 2px; }
+.genres { color: #555; font-size: 13px; }
+
+footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+  color: #999;
+  font-size: 12px;
+}

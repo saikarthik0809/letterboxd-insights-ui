@@ -8,21 +8,34 @@
     </p>
 
     <div class="actions">
-      <label class="button" [class.disabled]="uploading()">
+      <label class="button" [class.disabled]="uploading() || enriching()">
         {{ uploading() ? 'Uploading…' : 'Upload Letterboxd export' }}
         <input
           type="file"
           accept=".zip,.csv"
           (change)="onFileSelected($event)"
-          [disabled]="uploading()"
+          [disabled]="uploading() || enriching()"
           hidden
         />
       </label>
 
-      @if (films().length > 0) {
+      @if (needsDetails() && !enriching()) {
+        <button class="button" (click)="loadDetails()">Load movie details</button>
+      }
+
+      @if (films().length > 0 && !enriching()) {
         <button class="button secondary" (click)="clearAll()">Clear all</button>
       }
     </div>
+
+    @if (enriching()) {
+      <div class="progress">
+        <div class="progress-bar" [style.width.%]="enrichPercent()"></div>
+      </div>
+      <p class="message">
+        Loading movie details… {{ enrichDone() }} / {{ enrichTotal() }} ({{ enrichPercent() }}%)
+      </p>
+    }
 
     @if (message()) {
       <p class="message">{{ message() }}</p>
@@ -37,8 +50,10 @@
     <table>
       <thead>
         <tr>
+          <th></th>
           <th>Film</th>
           <th>Year</th>
+          <th>Genres</th>
           <th>Rating</th>
           <th>Watched</th>
         </tr>
@@ -46,8 +61,21 @@
       <tbody>
         @for (film of films(); track film.id) {
           <tr>
-            <td>{{ film.name }}</td>
+            <td class="poster-cell">
+              @if (posterUrl(film.posterPath); as url) {
+                <img [src]="url" [alt]="film.name" loading="lazy" />
+              } @else {
+                <div class="no-poster"></div>
+              }
+            </td>
+            <td>
+              <div class="title">{{ film.name }}</div>
+              @if (film.director) {
+                <div class="director">{{ film.director }}</div>
+              }
+            </td>
             <td>{{ film.year }}</td>
+            <td class="genres">{{ film.genres.join(', ') || '–' }}</td>
             <td>{{ film.rating ?? '–' }}</td>
             <td>{{ film.watchedDate ?? '–' }}</td>
           </tr>
@@ -55,4 +83,8 @@
       </tbody>
     </table>
   }
+
+  <footer>
+    Movie details and posters from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.
+  </footer>
 </main>
