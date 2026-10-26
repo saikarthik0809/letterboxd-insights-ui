@@ -1,0 +1,25 @@
+<main>
+  <h1>My Letterboxd</h1>
+  <p class="count">{{ films().length }} films</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Film</th>
+        <th>Year</th>
+        <th>Rating</th>
+        <th>Watched</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (film of films(); track film.id) {
+        <tr>
+          <td>{{ film.name }}</td>
+          <td>{{ film.year }}</td>
+          <td>{{ film.rating ?? '–' }}</td>
+          <td>{{ film.watchedDate ?? '–' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</main>

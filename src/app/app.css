@@ -1,0 +1,23 @@
+main {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px;
+  font-family: system-ui, sans-serif;
+}
+
+h1 { margin-bottom: 4px; }
+.count { color: #777; margin-top: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+th { background: #f6f6f6; }
+tbody tr:hover { background: #fafafa; }
