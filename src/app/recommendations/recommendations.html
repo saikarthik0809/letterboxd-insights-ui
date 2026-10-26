@@ -1,0 +1,57 @@
+<div class="top">
+  <p class="intro">Picked from your highest-rated films and the genres and directors you rate above your average.</p>
+  <button class="button" (click)="load()" [disabled]="loading()">
+    {{ loading() ? 'Finding films…' : 'Refresh' }}
+  </button>
+</div>
+
+@if (loading() && recs().length === 0) {
+  <p class="empty">Finding films you might like… this takes a few seconds.</p>
+} @else if (error()) {
+  <p class="empty">Couldn't load recommendations. Is the backend running?</p>
+} @else if (recs().length === 0) {
+  <p class="empty">No recommendations yet. Upload your films and load movie details first.</p>
+} @else {
+  <div class="grid">
+    @for (r of recs(); track r.tmdbId) {
+      <article class="card">
+        <a [href]="tmdbLink(r.tmdbId)" target="_blank" rel="noopener">
+          @if (posterUrl(r.posterPath); as url) {
+            <img [src]="url" [alt]="r.title" loading="lazy" />
+          } @else {
+            <div class="no-poster">{{ r.title }}</div>
+          }
+        </a>
+
+        <div class="body">
+          <h3>{{ r.title }} @if (r.year) { <span class="muted">({{ r.year }})</span> }</h3>
+
+          <div class="meta">
+            @if (r.director) { <span>{{ r.director }}</span> }
+            @if (r.tmdbRating) { <span>★ {{ r.tmdbRating }}/10</span> }
+          </div>
+
+          @if (r.genres.length) {
+            <div class="tags">
+              @for (g of r.genres; track g) {
+                <span class="tag">{{ g }}</span>
+              }
+            </div>
+          }
+
+          @if (r.because.length) {
+            <p class="because">Because you loved <strong>{{ r.because.join(' and ') }}</strong></p>
+          }
+
+          @for (reason of r.reasons; track reason) {
+            <p class="reason">✓ {{ reason }}</p>
+          }
+
+          @if (r.overview) {
+            <p class="overview">{{ r.overview }}</p>
+          }
+        </div>
+      </article>
+    }
+  </div>
+}
