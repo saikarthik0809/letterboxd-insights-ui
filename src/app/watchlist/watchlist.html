@@ -1,0 +1,42 @@
+@if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+
+@if (watchlist.items().length === 0) {
+  <p class="empty">Your watchlist is empty. Add films from the <a routerLink="/recommendations">For You</a> page.</p>
+} @else {
+  <p class="count">{{ watchlist.items().length }} films to watch</p>
+
+  <div class="grid">
+    @for (item of watchlist.items(); track item.id) {
+      <article class="card" [class.busy]="busyId() === item.id">
+        @if (posterUrl(item.posterPath); as url) {
+          <img [src]="url" [alt]="item.title" loading="lazy" />
+        } @else {
+          <div class="no-poster">{{ item.title }}</div>
+        }
+
+        <div class="body">
+          <h3>{{ item.title }} @if (item.year) { <span class="muted">({{ item.year }})</span> }</h3>
+          <p class="muted small">Added {{ item.addedDate }}</p>
+
+          <div class="watched">
+            <select #rating>
+              <option value="">No rating</option>
+              @for (r of ratingOptions; track r) {
+                <option [value]="r">{{ r }}★</option>
+              }
+            </select>
+            <button class="button" (click)="markWatched(item, rating.value)" [disabled]="busyId() === item.id">
+              Watched it
+            </button>
+          </div>
+
+          <button class="link-button" (click)="remove(item)" [disabled]="busyId() === item.id">
+            Remove
+          </button>
+        </div>
+      </article>
+    }
+  </div>
+}

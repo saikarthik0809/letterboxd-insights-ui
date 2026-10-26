@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { WatchlistApi } from '../services/watchlist-api';
 
 interface Recommendation {
   tmdbId: number;
@@ -22,13 +23,16 @@ interface Recommendation {
 })
 export class Recommendations implements OnInit {
   private http = inject(HttpClient);
+  watchlist = inject(WatchlistApi);
 
   recs = signal<Recommendation[]>([]);
   loading = signal(false);
   error = signal(false);
+  addingId = signal<number | null>(null);
 
   ngOnInit() {
     this.load();
+    this.watchlist.load();
   }
 
   load() {
@@ -43,6 +47,19 @@ export class Recommendations implements OnInit {
         this.error.set(true);
         this.loading.set(false);
       }
+    });
+  }
+
+  addToWatchlist(r: Recommendation) {
+    this.addingId.set(r.tmdbId);
+    this.watchlist.add({
+      tmdbId: r.tmdbId,
+      title: r.title,
+      year: r.year,
+      posterPath: r.posterPath
+    }).subscribe({
+      next: () => this.addingId.set(null),
+      error: () => this.addingId.set(null)
     });
   }
 

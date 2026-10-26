@@ -53,6 +53,7 @@
         <th>Genres</th>
         <th>Rating</th>
         <th>Watched</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -73,8 +74,18 @@
           </td>
           <td>{{ film.year }}</td>
           <td class="genres">{{ film.genres.join(', ') || '–' }}</td>
-          <td>{{ film.rating ?? '–' }}</td>
+          <td>
+            <select class="rating-select" #ratingSelect (change)="updateRating(film, ratingSelect.value)">
+              <option value="" [selected]="film.rating == null">–</option>
+              @for (r of ratingOptions; track r) {
+                <option [value]="r" [selected]="film.rating === r">{{ r }}★</option>
+              }
+            </select>
+          </td>
           <td>{{ film.watchedDate ?? '–' }}</td>
+          <td>
+            <button class="delete-button" (click)="deleteFilm(film)" title="Delete film">✕</button>
+          </td>
         </tr>
       }
     </tbody>

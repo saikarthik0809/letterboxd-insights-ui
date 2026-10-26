@@ -36,6 +36,8 @@ export class Films implements OnInit {
   enrichDone = signal(0);
   enrichTotal = signal(0);
 
+  ratingOptions = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+
   needsDetails = computed(() => this.films().some(f => f.enriched == null));
   enrichPercent = computed(() =>
     this.enrichTotal() === 0 ? 0 : Math.round((this.enrichDone() / this.enrichTotal()) * 100)
@@ -105,6 +107,28 @@ export class Films implements OnInit {
         this.enriching.set(false);
         this.message.set('Could not load details from TMDB. Check your token and try again.');
       }
+    });
+  }
+
+  updateRating(film: Film, value: string) {
+    const rating = value ? Number(value) : null;
+    this.http.patch<Film>(`${API}/${film.id}`, { rating }).subscribe({
+      next: updated => {
+        this.films.update(list => list.map(f => f.id === updated.id ? updated : f));
+        this.message.set(`Updated "${film.name}" to ${rating ?? 'no rating'}`);
+      },
+      error: () => this.message.set('Could not update the rating.')
+    });
+  }
+
+  deleteFilm(film: Film) {
+    if (!confirm(`Delete "${film.name}"?`)) return;
+    this.http.delete(`${API}/${film.id}`).subscribe({
+      next: () => {
+        this.films.update(list => list.filter(f => f.id !== film.id));
+        this.message.set(`Deleted "${film.name}"`);
+      },
+      error: () => this.message.set('Could not delete the film.')
     });
   }
 

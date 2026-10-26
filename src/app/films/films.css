@@ -89,3 +89,26 @@ tbody tr:hover { background: #fafafa; }
 .title { font-weight: 600; }
 .director { color: #777; font-size: 13px; margin-top: 2px; }
 .genres { color: #555; font-size: 13px; }
+
+.rating-select {
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.delete-button:hover {
+  color: #c62828;
+  background: #fdecea;
+}

@@ -49,6 +49,13 @@
 
           @if (r.overview) {
             <p class="overview">{{ r.overview }}</p>
+                    @if (watchlist.tmdbIds().has(r.tmdbId)) {
+            <button class="watchlist-button added" disabled>✓ On your watchlist</button>
+          } @else {
+            <button class="watchlist-button" (click)="addToWatchlist(r)" [disabled]="addingId() === r.tmdbId">
+              {{ addingId() === r.tmdbId ? 'Adding…' : '+ Watchlist' }}
+            </button>
+          }  
           }
         </div>
       </article>
