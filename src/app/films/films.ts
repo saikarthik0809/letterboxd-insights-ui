@@ -18,6 +18,8 @@ interface Film {
   enriched: boolean | null;
 }
 
+type SortOption = 'watched-desc' | 'rating-desc' | 'rating-asc' | 'year-desc' | 'year-asc' | 'title';
+
 const API = 'http://localhost:8080/api/films';
 
 @Component({
@@ -38,6 +40,39 @@ export class Films implements OnInit {
 
   ratingOptions = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
+  // Search, filter, sort
+  searchText = signal('');
+  genreFilter = signal('');
+  sortBy = signal<SortOption>('watched-desc');
+
+  allGenres = computed(() =>
+    [...new Set(this.films().flatMap(f => f.genres))].sort()
+  );
+
+  visibleFilms = computed(() => {
+    const search = this.searchText().trim().toLowerCase();
+    const genre = this.genreFilter();
+
+    const filtered = this.films().filter(f => {
+      const matchesSearch = !search
+        || f.name.toLowerCase().includes(search)
+        || (f.director ?? '').toLowerCase().includes(search);
+      const matchesGenre = !genre || f.genres.includes(genre);
+      return matchesSearch && matchesGenre;
+    });
+
+    return [...filtered].sort((a, b) => {
+      switch (this.sortBy()) {
+        case 'rating-desc': return (b.rating ?? -1) - (a.rating ?? -1);
+        case 'rating-asc':  return (a.rating ?? 99) - (b.rating ?? 99);
+        case 'year-desc':   return (b.year ?? 0) - (a.year ?? 0);
+        case 'year-asc':    return (a.year ?? 9999) - (b.year ?? 9999);
+        case 'title':       return a.name.localeCompare(b.name);
+        default:            return (b.watchedDate ?? '').localeCompare(a.watchedDate ?? '');
+      }
+    });
+  });
+
   needsDetails = computed(() => this.films().some(f => f.enriched == null));
   enrichPercent = computed(() =>
     this.enrichTotal() === 0 ? 0 : Math.round((this.enrichDone() / this.enrichTotal()) * 100)
@@ -53,6 +88,15 @@ export class Films implements OnInit {
 
   posterUrl(path: string | null) {
     return path ? `https://image.tmdb.org/t/p/w92${path}` : null;
+  }
+
+  setSort(value: string) {
+    this.sortBy.set(value as SortOption);
+  }
+
+  clearFilters() {
+    this.searchText.set('');
+    this.genreFilter.set('');
   }
 
   onFileSelected(event: Event) {

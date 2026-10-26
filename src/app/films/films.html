@@ -39,55 +39,93 @@
   }
 </section>
 
-<p class="count">{{ films().length }} films</p>
-
 @if (films().length === 0) {
   <p class="empty">No films yet. Upload your export to get started.</p>
 } @else {
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th>Film</th>
-        <th>Year</th>
-        <th>Genres</th>
-        <th>Rating</th>
-        <th>Watched</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (film of films(); track film.id) {
-        <tr>
-          <td class="poster-cell">
-            @if (posterUrl(film.posterPath); as url) {
-              <img [src]="url" [alt]="film.name" loading="lazy" />
-            } @else {
-              <div class="no-poster"></div>
-            }
-          </td>
-          <td>
-            <div class="title">{{ film.name }}</div>
-            @if (film.director) {
-              <div class="director">{{ film.director }}</div>
-            }
-          </td>
-          <td>{{ film.year }}</td>
-          <td class="genres">{{ film.genres.join(', ') || '–' }}</td>
-          <td>
-            <select class="rating-select" #ratingSelect (change)="updateRating(film, ratingSelect.value)">
-              <option value="" [selected]="film.rating == null">–</option>
-              @for (r of ratingOptions; track r) {
-                <option [value]="r" [selected]="film.rating === r">{{ r }}★</option>
-              }
-            </select>
-          </td>
-          <td>{{ film.watchedDate ?? '–' }}</td>
-          <td>
-            <button class="delete-button" (click)="deleteFilm(film)" title="Delete film">✕</button>
-          </td>
-        </tr>
+  <div class="toolbar">
+    <input
+      #search
+      class="search"
+      type="search"
+      placeholder="Search films or directors…"
+      [value]="searchText()"
+      (input)="searchText.set(search.value)"
+    />
+
+    <select #genre [value]="genreFilter()" (change)="genreFilter.set(genre.value)">
+      <option value="">All genres</option>
+      @for (g of allGenres(); track g) {
+        <option [value]="g" [selected]="genreFilter() === g">{{ g }}</option>
       }
-    </tbody>
-  </table>
+    </select>
+
+    <select #sort (change)="setSort(sort.value)">
+      <option value="watched-desc" [selected]="sortBy() === 'watched-desc'">Recently watched</option>
+      <option value="rating-desc" [selected]="sortBy() === 'rating-desc'">Highest rated</option>
+      <option value="rating-asc" [selected]="sortBy() === 'rating-asc'">Lowest rated</option>
+      <option value="year-desc" [selected]="sortBy() === 'year-desc'">Newest release</option>
+      <option value="year-asc" [selected]="sortBy() === 'year-asc'">Oldest release</option>
+      <option value="title" [selected]="sortBy() === 'title'">Title A–Z</option>
+    </select>
+  </div>
+
+  <p class="count">
+    @if (visibleFilms().length === films().length) {
+      {{ films().length }} films
+    } @else {
+      {{ visibleFilms().length }} of {{ films().length }} films
+      <button class="link-button" (click)="clearFilters()">Clear filters</button>
+    }
+  </p>
+
+  @if (visibleFilms().length === 0) {
+    <p class="empty">No films match your search.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Film</th>
+          <th>Year</th>
+          <th>Genres</th>
+          <th>Rating</th>
+          <th>Watched</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (film of visibleFilms(); track film.id) {
+          <tr>
+            <td class="poster-cell">
+              @if (posterUrl(film.posterPath); as url) {
+                <img [src]="url" [alt]="film.name" loading="lazy" />
+              } @else {
+                <div class="no-poster"></div>
+              }
+            </td>
+            <td>
+              <div class="title">{{ film.name }}</div>
+              @if (film.director) {
+                <div class="director">{{ film.director }}</div>
+              }
+            </td>
+            <td>{{ film.year }}</td>
+            <td class="genres">{{ film.genres.join(', ') || '–' }}</td>
+            <td>
+              <select class="rating-select" #ratingSelect (change)="updateRating(film, ratingSelect.value)">
+                <option value="" [selected]="film.rating == null">–</option>
+                @for (r of ratingOptions; track r) {
+                  <option [value]="r" [selected]="film.rating === r">{{ r }}★</option>
+                }
+              </select>
+            </td>
+            <td>{{ film.watchedDate ?? '–' }}</td>
+            <td>
+              <button class="delete-button" (click)="deleteFilm(film)" title="Delete film">✕</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 }
