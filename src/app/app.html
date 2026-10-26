@@ -1,88 +1,13 @@
 <main>
-  <h1>My Letterboxd</h1>
+  <header>
+    <h1>My Letterboxd</h1>
+    <nav>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Films</a>
+      <a routerLink="/stats" routerLinkActive="active">Stats</a>
+    </nav>
+  </header>
 
-  <section class="upload">
-    <p>
-      Export your data from Letterboxd (<strong>Settings → Data → Export Your Data</strong>),
-      then upload the zip file here.
-    </p>
-
-    <div class="actions">
-      <label class="button" [class.disabled]="uploading() || enriching()">
-        {{ uploading() ? 'Uploading…' : 'Upload Letterboxd export' }}
-        <input
-          type="file"
-          accept=".zip,.csv"
-          (change)="onFileSelected($event)"
-          [disabled]="uploading() || enriching()"
-          hidden
-        />
-      </label>
-
-      @if (needsDetails() && !enriching()) {
-        <button class="button" (click)="loadDetails()">Load movie details</button>
-      }
-
-      @if (films().length > 0 && !enriching()) {
-        <button class="button secondary" (click)="clearAll()">Clear all</button>
-      }
-    </div>
-
-    @if (enriching()) {
-      <div class="progress">
-        <div class="progress-bar" [style.width.%]="enrichPercent()"></div>
-      </div>
-      <p class="message">
-        Loading movie details… {{ enrichDone() }} / {{ enrichTotal() }} ({{ enrichPercent() }}%)
-      </p>
-    }
-
-    @if (message()) {
-      <p class="message">{{ message() }}</p>
-    }
-  </section>
-
-  <p class="count">{{ films().length }} films</p>
-
-  @if (films().length === 0) {
-    <p class="empty">No films yet. Upload your export to get started.</p>
-  } @else {
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Film</th>
-          <th>Year</th>
-          <th>Genres</th>
-          <th>Rating</th>
-          <th>Watched</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (film of films(); track film.id) {
-          <tr>
-            <td class="poster-cell">
-              @if (posterUrl(film.posterPath); as url) {
-                <img [src]="url" [alt]="film.name" loading="lazy" />
-              } @else {
-                <div class="no-poster"></div>
-              }
-            </td>
-            <td>
-              <div class="title">{{ film.name }}</div>
-              @if (film.director) {
-                <div class="director">{{ film.director }}</div>
-              }
-            </td>
-            <td>{{ film.year }}</td>
-            <td class="genres">{{ film.genres.join(', ') || '–' }}</td>
-            <td>{{ film.rating ?? '–' }}</td>
-            <td>{{ film.watchedDate ?? '–' }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  }
+  <router-outlet />
 
   <footer>
     Movie details and posters from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.

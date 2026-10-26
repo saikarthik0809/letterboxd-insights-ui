@@ -1,0 +1,145 @@
+@if (error()) {
+  <p class="empty">Couldn't load stats. Is the backend running?</p>
+} @else if (!stats()) {
+  <p class="empty">Loading stats…</p>
+} @else if (stats()!.totalFilms === 0) {
+  <p class="empty">No films yet. Upload your Letterboxd export on the Films page first.</p>
+} @else {
+  @let s = stats()!;
+
+  <!-- Summary cards -->
+  <section class="cards">
+    <div class="card">
+      <div class="value">{{ s.totalFilms }}</div>
+      <div class="label">Films</div>
+    </div>
+    <div class="card">
+      <div class="value">{{ totalHours() }}</div>
+      <div class="label">Hours watched</div>
+    </div>
+    <div class="card">
+      <div class="value">{{ s.averageRating }}★</div>
+      <div class="label">Average rating</div>
+    </div>
+    <div class="card">
+      <div class="value">{{ s.ratedFilms }}</div>
+      <div class="label">Films rated</div>
+    </div>
+  </section>
+
+  <!-- Rating distribution -->
+  <section class="panel">
+    <h2>How you rate</h2>
+    <div class="columns">
+      @for (c of s.ratingDistribution; track c.label) {
+        <div class="col">
+          <span class="col-count">{{ c.count }}</span>
+          <div class="bar" [style.height.%]="percent(c.count, s.ratingDistribution)"></div>
+          <span class="col-label">{{ c.label }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <div class="two-up">
+    <!-- Films per year -->
+    <section class="panel">
+      <h2>Films logged per year</h2>
+      <div class="columns">
+        @for (c of s.filmsPerYear; track c.label) {
+          <div class="col">
+            <span class="col-count">{{ c.count }}</span>
+            <div class="bar" [style.height.%]="percent(c.count, s.filmsPerYear)"></div>
+            <span class="col-label">{{ c.label }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Decades -->
+    <section class="panel">
+      <h2>Release decades</h2>
+      <div class="columns">
+        @for (c of s.decades; track c.label) {
+          <div class="col">
+            <span class="col-count">{{ c.count }}</span>
+            <div class="bar" [style.height.%]="percent(c.count, s.decades)"></div>
+            <span class="col-label">{{ c.label }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <div class="two-up">
+    <!-- Top genres -->
+    <section class="panel">
+      <h2>Top genres</h2>
+      @for (g of s.topGenres; track g.label) {
+        <div class="row">
+          <span class="row-label">{{ g.label }}</span>
+          <div class="row-track">
+            <div class="row-bar" [style.width.%]="percent(g.count, s.topGenres)"></div>
+          </div>
+          <span class="row-count">{{ g.count }}</span>
+        </div>
+      }
+    </section>
+
+    <!-- Top directors -->
+    <section class="panel">
+      <h2>Top directors</h2>
+      <table>
+        <thead>
+          <tr><th>Director</th><th>Films</th><th>Your avg</th></tr>
+        </thead>
+        <tbody>
+          @for (d of s.topDirectors; track d.name) {
+            <tr>
+              <td>{{ d.name }}</td>
+              <td>{{ d.count }}</td>
+              <td>{{ d.averageRating }}★</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- Hot takes -->
+  <div class="two-up">
+    <section class="panel">
+      <h2>You liked more than most</h2>
+      @for (h of s.ratedHigherThanMost; track h.name) {
+        <div class="take">
+          @if (posterUrl(h.posterPath); as url) {
+            <img [src]="url" [alt]="h.name" />
+          } @else {
+            <div class="no-poster"></div>
+          }
+          <div>
+            <div class="take-title">{{ h.name }} <span class="muted">({{ h.year }})</span></div>
+            <div class="muted">You: {{ h.yourRating }}★ · Everyone: {{ h.tmdbRating }}★</div>
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>You liked less than most</h2>
+      @for (h of s.ratedLowerThanMost; track h.name) {
+        <div class="take">
+          @if (posterUrl(h.posterPath); as url) {
+            <img [src]="url" [alt]="h.name" />
+          } @else {
+            <div class="no-poster"></div>
+          }
+          <div>
+            <div class="take-title">{{ h.name }} <span class="muted">({{ h.year }})</span></div>
+            <div class="muted">You: {{ h.yourRating }}★ · Everyone: {{ h.tmdbRating }}★</div>
+          </div>
+        </div>
+      }
+    </section>
+  </div>
+}

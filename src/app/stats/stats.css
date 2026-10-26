@@ -1,0 +1,117 @@
+.empty { color: #777; font-style: italic; }
+.muted { color: #888; font-size: 13px; font-weight: normal; }
+
+h2 {
+  font-size: 15px;
+  margin: 0 0 14px;
+  color: #333;
+}
+
+/* Summary cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #f6f6f6;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.card .value { font-size: 28px; font-weight: 700; }
+.card .label { color: #777; font-size: 13px; margin-top: 4px; }
+
+/* Panels */
+.panel {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  min-width: 0;
+}
+
+.two-up {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 700px) {
+  .two-up { grid-template-columns: 1fr; }
+}
+
+/* Vertical bar charts */
+.columns {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 180px;
+}
+
+.col {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.bar {
+  width: 100%;
+  min-height: 2px;
+  background: #00b020;
+  border-radius: 3px 3px 0 0;
+}
+
+.col-count { font-size: 11px; color: #777; margin-bottom: 4px; }
+.col-label {
+  font-size: 11px;
+  color: #555;
+  margin-top: 6px;
+  white-space: nowrap;
+}
+
+/* Horizontal bar chart */
+.row {
+  display: grid;
+  grid-template-columns: 110px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.row-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-track { background: #f0f0f0; border-radius: 4px; height: 12px; }
+.row-bar { background: #40bcf4; height: 100%; border-radius: 4px; }
+.row-count { color: #777; text-align: right; }
+
+/* Directors table */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid #f0f0f0; }
+th { color: #777; font-weight: 500; font-size: 12px; }
+
+/* Hot takes */
+.take {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.take img,
+.take .no-poster {
+  width: 40px;
+  height: 60px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.take .no-poster { background: #e4e4e4; }
+.take-title { font-weight: 600; font-size: 14px; }
