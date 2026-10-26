@@ -5,8 +5,53 @@ main {
   font-family: system-ui, sans-serif;
 }
 
-h1 { margin-bottom: 4px; }
-.count { color: #777; margin-top: 0; }
+h1 { margin-bottom: 16px; }
+
+.upload {
+  background: #f6f6f6;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.upload p { margin: 0 0 12px; color: #444; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: inline-block;
+  background: #00b020;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.button:hover { background: #009a1c; }
+
+.button.secondary {
+  background: white;
+  color: #c62828;
+  border: 1px solid #c62828;
+}
+
+.button.secondary:hover { background: #fdecea; }
+
+.button.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.message { margin: 12px 0 0; font-weight: 500; }
+
+.count { color: #777; }
+.empty { color: #777; font-style: italic; }
 
 table {
   width: 100%;
